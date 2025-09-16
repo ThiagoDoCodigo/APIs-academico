@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import corsr from "cors";
 import "dotenv/config";
-import clientesRouter from "./routes/ClientesRouter";
+import ClientesRouter from "./routes/ClientesRouter";
 import ProdutosRouter from "./routes/ProdutosRouter";
 import PedidosRouter from "./routes/PedidosRouter";
 
@@ -11,7 +11,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT;
 
-app.use("/api", clientesRouter);
+app.use("/api", ClientesRouter);
 
 app.use("/api", ProdutosRouter);
 
