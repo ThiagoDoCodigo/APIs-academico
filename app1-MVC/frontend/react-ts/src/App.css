@@ -1,0 +1,13 @@
+@import url("https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap");
+
+body {
+  background-color: #e7e7e7;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 100vh;
+  max-height: 100vh;
+  font-family: "SUSE", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
