@@ -2,6 +2,7 @@ import { UsersData } from "../data/UsersData";
 import { CustomError } from "../errors/CustomError";
 import { User, UserWithAge } from "../types/User";
 import { PostBusiness } from "./PostBusiness";
+import bcrypt from "bcrypt";
 
 function isUser(obj: any): obj is User {
   return (
@@ -173,7 +174,14 @@ export class UsersBusiness {
         throw new CustomError("O campo nascimento é obrigatório!", 400);
       }
 
-      const createUser = await this.userData.addUser(newUser, users);
+      const hashedPassword = await bcrypt.hash(newUser.password, 10);
+
+      const userToSave: Omit<User, "id"> = {
+        ...newUser,
+        password: hashedPassword,
+      };
+
+      const createUser = await this.userData.addUser(userToSave, users);
       return createUser;
     } catch (error: any) {
       if (error instanceof CustomError) {
@@ -223,7 +231,14 @@ export class UsersBusiness {
         throw new CustomError("O campo nascimento é obrigatório!", 400);
       }
 
-      const updatedUser = await this.userData.putUser(userUpdates, users, id);
+      const hashedPassword = await bcrypt.hash(userUpdates.password, 10);
+
+      const userToSave: Omit<User, "id"> = {
+        ...userUpdates,
+        password: hashedPassword,
+      };
+
+      const updatedUser = await this.userData.putUser(userToSave, users, id);
       return updatedUser;
     } catch (error: any) {
       if (error instanceof CustomError) {

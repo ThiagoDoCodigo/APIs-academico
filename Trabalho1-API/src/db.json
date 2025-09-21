@@ -4,7 +4,7 @@
     "name": "Thiago",
     "email": "thiago@email.com",
     "role": "admin",
-    "password": "1234",
+    "password": "$2b$10$5e944CxGUBysjckyh2w6l.bc9PMBWrjZaFvLJwAooSsHNGSahRTHa",
     "nasc": "2000/06/16"
   },
   {
@@ -12,7 +12,7 @@
     "name": "Maria Souza",
     "email": "maria@email.com",
     "role": "user",
-    "password": "123456",
+    "password": "$2b$10$QPNvsaVc6umyQOC/tNJLwOs1Jb298wHaYkXjbtXbQOt117Daxvi9O",
     "nasc": "1995/07/12"
   },
   {
@@ -20,7 +20,7 @@
     "name": "Renata",
     "email": "Renata@email.com",
     "role": "user",
-    "password": "1234",
+    "password": "$2b$10$ffhRMzGsiPNHhDxW40ol2OBLMe9xLGVex19CkxwT6mNHI5.uO6SYO",
     "nasc": "1972/07/31"
   },
   {
@@ -28,7 +28,7 @@
     "name": "Bruna",
     "email": "Bruna@email.com",
     "role": "admin",
-    "password": "1234",
+    "password": "$2b$10$ZOPhDYAPdyXJxch6OF.kt.5suWM5SVSm51x7MMhbIc8U/ezQZmrfS",
     "nasc": "2001/08/20"
   },
   {
@@ -36,7 +36,7 @@
     "name": "Maria",
     "email": "Maria@email.com",
     "role": "admin",
-    "password": "1234",
+    "password": "$2b$10$VLVjyFKZ2pROm310s5bRwOvrXG5nPAPMuVeygAIxffFGxBOA8qBd6",
     "nasc": "2001/08/20"
   },
   {
@@ -44,7 +44,7 @@
     "name": "Julia",
     "email": "Julia@email.com",
     "role": "user",
-    "password": "1234",
+    "password": "$2b$10$PTAKq68DCEEZnTkFMXQ.jOJzwkyhh56nQXvdXKc3qFA.RvOv3Fu5a",
     "nasc": "2001/08/20"
   },
   {
@@ -52,7 +52,7 @@
     "name": "TiagoProf",
     "email": "TiagoProf@email.com",
     "role": "admin",
-    "password": "senha123",
+    "password": "$2b$10$smH3dy/EbkBe1ETE9gltoe9jvgwj95nhxU7MN0Ns57nVFCJE4MnlK",
     "nasc": "1995/03/25"
   },
   {
@@ -60,7 +60,7 @@
     "name": "FlavioProf",
     "email": "FlavioProf@email.com",
     "role": "admin",
-    "password": "senha123",
+    "password": "$2b$10$K2M04ZrrkjW6RE5RvOEEXe1HrDiF10v4LbGLnJz2ojVAE9tNHGL/.",
     "nasc": "1995/03/25"
   }
 ]
