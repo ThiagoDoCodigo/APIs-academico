@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import { CustomError } from "../errors/CustomError";
-import { User } from "../types/User";
+import { User, UserWithAge } from "../types/User";
 import { usersBusiness } from "../serviceContainer/instances";
 
 export class UsersController {
   async getUsersAll(req: Request, res: Response) {
     try {
-      const users = await usersBusiness.getUsersAll();
+      const users: UserWithAge[] = await usersBusiness.getUsersAll();
       const usersSemSenha = users.map(({ password, ...rest }) => rest);
-      res.status(200).json(usersSemSenha);
+      return res.status(200).json(usersSemSenha);
     } catch (error) {
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json({ message: error.message });
+        return res.status(error.statusCode).json({ message: error.message });
       } else {
-        res.status(500).json({ message: "Erro inesperado!" });
+        return res.status(500).json({ message: "Erro inesperado!" });
       }
     }
   }
@@ -28,7 +28,7 @@ export class UsersController {
         });
       }
 
-      const user = await usersBusiness.getUserById(idUser);
+      const user: UserWithAge = await usersBusiness.getUserById(idUser);
       const { password, ...userSemSenha } = user;
       return res.status(200).json(userSemSenha);
     } catch (error: any) {
@@ -54,7 +54,9 @@ export class UsersController {
         });
       }
 
-      const users = await usersBusiness.getUsersBySearch(searchUser);
+      const users: UserWithAge[] = await usersBusiness.getUsersBySearch(
+        searchUser
+      );
       const usersSemSenha = users.map(({ password, ...rest }) => rest);
 
       return res.status(200).json(usersSemSenha);
@@ -78,7 +80,10 @@ export class UsersController {
         });
       }
 
-      const users = await usersBusiness.getUsersByAgeBetween(minAge, maxAge);
+      const users: UserWithAge[] = await usersBusiness.getUsersByAgeBetween(
+        minAge,
+        maxAge
+      );
       const usersSemSenha = users.map(({ password, ...rest }) => rest);
 
       return res.status(200).json(usersSemSenha);
@@ -143,7 +148,7 @@ export class UsersController {
         });
       }
 
-      const newUser = await usersBusiness.addUser(user);
+      const newUser: UserWithAge = await usersBusiness.addUser(user);
       const { password, ...userSemSenha } = newUser;
       return res.status(201).json({
         message: "Usuário cadastrado com sucesso!",
@@ -217,7 +222,10 @@ export class UsersController {
         });
       }
 
-      const updatedUser = await usersBusiness.putUser(user, idUser);
+      const updatedUser: UserWithAge = await usersBusiness.putUser(
+        user,
+        idUser
+      );
       const { password, ...userSemSenha } = updatedUser;
       return res.status(201).json({
         message: "Usuário atualizado com sucesso!",
@@ -234,14 +242,13 @@ export class UsersController {
 
   async deleteInativesUsers(req: Request, res: Response) {
     try {
-      const deletedUsers = await usersBusiness.deleteInativesUsers();
+      const deletedUsers: UserWithAge[] =
+        await usersBusiness.deleteInativesUsers();
       const usersSemSenha = deletedUsers.map(({ password, ...rest }) => rest);
-      return res
-        .status(201)
-        .json({
-          message: "Usuários inativos deletados!",
-          users: usersSemSenha,
-        });
+      return res.status(201).json({
+        message: "Usuários inativos deletados!",
+        users: usersSemSenha,
+      });
     } catch (error: any) {
       if (error instanceof CustomError) {
         return res.status(error.statusCode).json({ message: error.message });

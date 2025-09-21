@@ -17,16 +17,25 @@ function isUser(obj: any): obj is User {
 }
 
 export class UsersBusiness {
-  userData = new UsersData();
-  postBusiness!: PostBusiness;
+  private userData!: UsersData;
+  private postBusiness!: PostBusiness;
 
-  constructor(postBusiness?: PostBusiness) {
+  constructor(userData?: UsersData, postBusiness?: PostBusiness) {
+    if (userData) this.userData = userData;
     if (postBusiness) this.postBusiness = postBusiness;
   }
 
-  async getUsersAll() {
+  async setUserData(userData: UsersData) {
+    this.userData = userData;
+  }
+
+  async setPostBusiness(postBusiness: PostBusiness) {
+    this.postBusiness = postBusiness;
+  }
+
+  async getUsersAll(): Promise<UserWithAge[]> {
     try {
-      const users = await this.userData.getUsersAll();
+      const users: UserWithAge[] = await this.userData.getUsersAll();
 
       if (!Array.isArray(users)) {
         throw new Error("Formato inválido: esperado um array de usuários.");
@@ -51,9 +60,9 @@ export class UsersBusiness {
     }
   }
 
-  async getUserById(id: number) {
+  async getUserById(id: number): Promise<UserWithAge> {
     try {
-      const users = await this.getUsersAll();
+      const users: UserWithAge[] = await this.getUsersAll();
 
       const userFind = users.find((u) => u?.id === id);
 
@@ -71,9 +80,9 @@ export class UsersBusiness {
     }
   }
 
-  async getUsersBySearch(search: string) {
+  async getUsersBySearch(search: string): Promise<UserWithAge[]> {
     try {
-      const users = await this.getUsersAll();
+      const users: UserWithAge[] = await this.getUsersAll();
 
       const userFilter = users.filter((u) =>
         u?.name.trim().toLowerCase().includes(search.toLowerCase())
@@ -93,9 +102,9 @@ export class UsersBusiness {
     }
   }
 
-  async getUsersByAgeBetween(min: number, max: number) {
+  async getUsersByAgeBetween(min: number, max: number): Promise<UserWithAge[]> {
     try {
-      const users = await this.getUsersAll();
+      const users: UserWithAge[] = await this.getUsersAll();
 
       const userFilter = users.filter((u) => u.age >= min && u.age <= max);
 
@@ -135,7 +144,7 @@ export class UsersBusiness {
 
   async addUser(newUser: Omit<User, "id">): Promise<UserWithAge> {
     try {
-      const users = await this.getUsersAll();
+      const users: UserWithAge[] = await this.getUsersAll();
       if (!newUser.name || newUser.name.trim() === "") {
         throw new CustomError("O campo nome é obrigatório!", 400);
       }
@@ -180,7 +189,7 @@ export class UsersBusiness {
     id: number
   ): Promise<UserWithAge> {
     try {
-      const users = await this.getUsersAll();
+      const users: UserWithAge[] = await this.getUsersAll();
 
       const existingUser = users.find((u) => u.id === id);
       if (!existingUser) {

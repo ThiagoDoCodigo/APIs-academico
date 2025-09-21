@@ -21,7 +21,7 @@ export class PostController {
     try {
       const post = req.body.post as Omit<
         Post,
-        "id" | "createdDate" | "published"
+        "id" | "createdDate" | "published" | "authorName"
       >;
 
       if (!post.authorId || isNaN(Number(post.authorId))) {
@@ -59,7 +59,7 @@ export class PostController {
         });
       }
 
-      const newPost = await postBusiness.addPost(post);
+      const newPost: Post = await postBusiness.addPost(post);
       return res
         .status(201)
         .json({ message: "Post cadastrado com sucesso!", post: newPost });
@@ -75,7 +75,7 @@ export class PostController {
   async patchPost(req: Request, res: Response) {
     try {
       const post = req.body.post as Partial<
-        Omit<Post, "id" | "authorId" | "createdDate">
+        Omit<Post, "id" | "authorId" | "createdDate" | "authorName">
       >;
 
       const idPost = parseInt(req.params.idPost);
@@ -133,10 +133,14 @@ export class PostController {
           .json({ message: "O campo 'published' deve ser true ou false!" });
       }
 
-      const newPost = await postBusiness.patchPost(post, idPost, idUser);
+      const updatedPost: Post = await postBusiness.patchPost(
+        post,
+        idPost,
+        idUser
+      );
       return res
         .status(201)
-        .json({ message: "Post atualizado com sucesso!", post: newPost });
+        .json({ message: "Post atualizado com sucesso!", post: updatedPost });
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.statusCode).json({ message: error.message });
@@ -163,8 +167,10 @@ export class PostController {
           .json({ message: "O campo ID do usuário é obrigatório!" });
       }
 
-      await postBusiness.deletePost(idPost, idUser);
-      return res.status(201).json({ message: "Post deletado com sucesso!" });
+      const deletedPost: Post = await postBusiness.deletePost(idPost, idUser);
+      return res
+        .status(201)
+        .json({ message: "Post deletado com sucesso!", post: deletedPost });
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.statusCode).json({ message: error.message });

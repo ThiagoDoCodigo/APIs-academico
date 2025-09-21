@@ -5,6 +5,7 @@ import path from "path";
 import { CustomError } from "../errors/CustomError";
 const dataLocal: string = "../dbPost.json";
 const filePath = path.join(__dirname, dataLocal);
+import { usersBusiness } from "../serviceContainer/instances";
 
 export class PostData {
   async getPostAll(): Promise<Post[]> {

@@ -9,11 +9,11 @@
   },
   {
     "id": 3,
-    "name": "João",
-    "email": "joao@email.com",
+    "name": "Maria Souza",
+    "email": "maria@email.com",
     "role": "user",
-    "password": "1234",
-    "nasc": "1990/05/10"
+    "password": "123456",
+    "nasc": "1995/07/12"
   },
   {
     "id": 5,
@@ -46,5 +46,21 @@
     "role": "user",
     "password": "1234",
     "nasc": "2001/08/20"
+  },
+  {
+    "id": 17,
+    "name": "TiagoProf",
+    "email": "TiagoProf@email.com",
+    "role": "admin",
+    "password": "senha123",
+    "nasc": "1995/03/25"
+  },
+  {
+    "id": 18,
+    "name": "FlavioProf",
+    "email": "FlavioProf@email.com",
+    "role": "admin",
+    "password": "senha123",
+    "nasc": "1995/03/25"
   }
 ]

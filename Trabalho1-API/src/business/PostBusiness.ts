@@ -2,31 +2,42 @@ import { PostData } from "../data/PostData";
 import { CustomError } from "../errors/CustomError";
 import { Post } from "../types/Post";
 import { UsersBusiness } from "./UsersBusiness";
+import { UserWithAge } from "../types/User";
 
 function isPost(obj: any): obj is Post {
   return (
     typeof obj === "object" &&
     obj !== null &&
     typeof obj.id === "number" &&
+    typeof obj.createdDate === "string" &&
+    typeof obj.published === "boolean" &&
     typeof obj.title === "string" &&
     typeof obj.content === "string" &&
     typeof obj.authorId === "number" &&
-    typeof obj.createdDate === "string" &&
-    typeof obj.published === "boolean"
+    typeof obj.authorName === "string"
   );
 }
 
 export class PostBusiness {
-  postData: PostData = new PostData();
+  postData!: PostData;
   userBusiness!: UsersBusiness;
 
-  constructor(userBusiness?: UsersBusiness) {
+  constructor(postData?: PostData, userBusiness?: UsersBusiness) {
+    if (postData) this.postData = postData;
     if (userBusiness) this.userBusiness = userBusiness;
   }
 
-  async getPostAll() {
+  async setPostData(postData: PostData) {
+    this.postData = postData;
+  }
+
+  async setUserBusiness(userBusiness: UsersBusiness) {
+    this.userBusiness = userBusiness;
+  }
+
+  async getPostAll(): Promise<Post[]> {
     try {
-      const posts = await this.postData.getPostAll();
+      const posts: Post[] = await this.postData.getPostAll();
 
       if (!Array.isArray(posts)) {
         throw new Error("Formato inválido: esperado um array de posts.");
@@ -49,11 +60,11 @@ export class PostBusiness {
   }
 
   async addPost(
-    newPost: Omit<Post, "id" | "createdDate" | "published">
+    newPost: Omit<Post, "id" | "createdDate" | "published" | "authorName">
   ): Promise<Post> {
     try {
-      const posts = await this.getPostAll();
-      const users = await this.userBusiness.getUsersAll();
+      const posts: Post[] = await this.getPostAll();
+      const users: UserWithAge[] = await this.userBusiness.getUsersAll();
 
       if (!newPost.authorId) {
         throw new CustomError("O campo ID do autor é obrigatório!", 400);
@@ -67,8 +78,14 @@ export class PostBusiness {
       if (!newPost.content || newPost.content.trim() === "") {
         throw new CustomError("O campo de conteúdo é obrigatório!", 400);
       }
+      const autor = users.find((u) => u.id === newPost.authorId);
+      if (!autor) {
+        throw new CustomError("Usuário nao encontrado!", 400);
+      }
+      const nomeDoAutor = autor.name;
+      const newPostWithName = { ...newPost, authorName: nomeDoAutor };
 
-      const createdPost = await this.postData.addPost(newPost, posts);
+      const createdPost = await this.postData.addPost(newPostWithName, posts);
       return createdPost;
     } catch (error: any) {
       if (error instanceof CustomError) {
@@ -80,12 +97,14 @@ export class PostBusiness {
   }
 
   async patchPost(
-    postUpdates: Partial<Omit<Post, "id" | "authorId" | "createdDate">>,
+    postUpdates: Partial<
+      Omit<Post, "id" | "authorId" | "createdDate" | "authorName">
+    >,
     idPost: number,
     idUser: number
   ): Promise<Post> {
     try {
-      const posts = await this.getPostAll();
+      const posts: Post[] = await this.getPostAll();
 
       const indexPost = posts.findIndex((p) => p.id === idPost);
       if (indexPost === -1) {
@@ -136,10 +155,10 @@ export class PostBusiness {
     }
   }
 
-  async deletePost(idPost: number, idUser: number) {
+  async deletePost(idPost: number, idUser: number): Promise<Post> {
     try {
-      const posts = await this.getPostAll();
-      const users = await this.userBusiness.getUsersAll();
+      const posts: Post[] = await this.getPostAll();
+      const users: UserWithAge[] = await this.userBusiness.getUsersAll();
 
       const indexPost = posts.findIndex((p) => p.id === idPost);
       if (indexPost === -1) {
