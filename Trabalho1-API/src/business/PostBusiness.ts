@@ -49,7 +49,7 @@ export class PostBusiness {
         throw new CustomError("JSON contém posts inválidos!", 400);
       }
 
-      if (!posts || posts.length === 0) {
+      if (!posts) {
         throw new CustomError("Lista de posts está vazia ou não existe!", 404);
       }
 

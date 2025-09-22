@@ -48,7 +48,7 @@ export class UsersBusiness {
         throw new CustomError("JSON contém usuários inválidos!", 400);
       }
 
-      if (!users || users.length === 0) {
+      if (!users) {
         throw new CustomError(
           "Lista de usuários está vazia ou não existe!",
           404
