@@ -1,0 +1,127 @@
+API de Usuários e Posts — Trabalho Acadêmico
+
+Este projeto é uma API RESTful desenvolvida em Node.js com TypeScript, 
+utilizando o padrão de arquitetura MVC (Model-View-Controller).
+Os dados são persistidos em arquivos .json e são manipulados de forma assíncrona usando o módulo fs.
+
+------------------------------------------------------------------------------------------------------------------------
+
+Funcionalidades
+A API oferece endpoints para gerenciar usuários e posts, com validações e regras de negócio:
+
+1- Usuários:
+
+a- Listar todos os usuários.
+
+b- Buscar usuários por ID, nome ou faixa etária.
+
+c- Adicionar e atualizar dados de usuários.
+
+d- Remover usuários inativos que não possuem posts.
+
+
+2- Posts:
+
+a- Listar todos os posts.
+
+b- Criar um novo post.
+
+c- Atualizar um post (apenas o autor pode modificar).
+
+d- Remover um post (apenas o autor ou um administrador pode excluir).
+
+------------------------------------------------------------------------------------------------------------------------
+
+Tecnologias Utilizadas
+
+a-Node.js: Ambiente de execução.
+
+b- TypeScript: Linguagem de programação tipada.
+
+c- Express: Framework web para Node.js.
+
+d- Bcrypt: Para criptografia de senhas.
+
+e- JSON: Para persistência de dados (simulando um banco de dados).
+
+------------------------------------------------------------------------------------------------------------------------
+
+O projeto segue uma arquitetura baseada em camadas para separar as responsabilidades:
+
+src/
+├── business/        # Camada de lógica de negócio e regras.
+├── controller/      # Camada de controle que lida com as requisições e respostas HTTP.
+├── data/            # Camada de acesso a dados (manipulação dos arquivos JSON).
+├── errors/          # Classes de erro personalizadas.
+├── routes/          # Definição das rotas e seus respectivos controllers.
+├── serviceContainer/ # Injeção de dependências.
+├── types/           # Definição das interfaces e tipos de dados.
+├── db.json          # Banco de dados de usuários.
+├── dbPost.json      # Banco de dados de posts.
+└── index.ts         # Arquivo principal da aplicação.
+
+------------------------------------------------------------------------------------------------------------------------
+
+Endpoints da API:
+
+Os endpoints podem ser testados com ferramentas como Postman, Thunder Client ou Insomnia.
+obs: a collection de endpoints estão dentro da pasta collections, na raiz do projeto.
+
+1- Endpoints de Usuários
+
+a- GET /users
+Descrição: Retorna todos os usuários cadastrados.
+
+b- GET /users/id/:id
+Descrição: Retorna um usuário específico pelo ID.
+Exemplo: GET http://localhost:3000/users/id/1
+
+c- GET /users/search?search=nome
+Descrição: Retorna usuários cujo nome contenha o termo de busca.
+Exemplo: GET http://localhost:3000/users/search?search=João
+
+d- GET /users/ageBetween/:min/:max
+Descrição: Retorna usuários com idade entre min e max.
+Exemplo: GET http://localhost:3000/users/ageBetween/20/30
+
+e- POST /users/newUser
+Descrição: Cria um novo usuário.
+Corpo da requisição: JSON com name, email, role, password e nasc.
+
+f- PUT /users/id/:id
+Descrição: Atualiza todos os dados de um usuário pelo ID.
+Corpo da requisição: JSON com os mesmos campos de POST.
+
+g- DELETE /users/removeInatives
+Descrição: Deleta todos os usuários que não são administradores e não têm posts.
+
+
+
+2- Endpoints de Posts
+
+a- GET /posts
+Descrição: Retorna todos os posts cadastrados.
+
+b- POST /posts/newPost
+Descrição: Cria um novo post.
+Corpo da requisição: JSON com title, content e authorId.
+
+c- PATCH /posts/patch/idPost/:idPost/idUser/:idUser
+Descrição: Atualiza parcialmente um post.
+Corpo da requisição: JSON com title, content ou published.
+
+d- DELETE /posts/delete/idPost/:idPost/idUser/:idUser
+Descrição: Deleta um post.
+
+------------------------------------------------------------------------------------------------------------------------
+
+Como Executar o Projeto
+Pré-requisitos: Certifique-se de ter o Node.js (versão 18+) e o npm instalados.
+
+Instale as dependências:
+npm install
+
+Inicie o servidor:
+npm run dev
+
+O servidor será iniciado em http://localhost:3000.
