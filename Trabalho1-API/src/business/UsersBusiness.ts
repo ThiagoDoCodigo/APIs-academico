@@ -3,6 +3,7 @@ import { CustomError } from "../errors/CustomError";
 import { User, UserWithAge } from "../types/User";
 import { PostBusiness } from "./PostBusiness";
 import bcrypt from "bcrypt";
+import { Post } from "../types/Post";
 
 function isUser(obj: any): obj is User {
   return (
@@ -85,15 +86,15 @@ export class UsersBusiness {
     try {
       const users: UserWithAge[] = await this.getUsersAll();
 
-      const userFilter = users.filter((u) =>
+      const usersFilter = users.filter((u) =>
         u?.name.trim().toLowerCase().includes(search.toLowerCase())
       );
 
-      if (userFilter.length === 0) {
+      if (usersFilter.length === 0) {
         throw new CustomError("Nenhum usuário encontrado!", 404);
       }
 
-      return userFilter;
+      return usersFilter;
     } catch (error: any) {
       if (error instanceof CustomError) {
         throw error;
@@ -107,13 +108,13 @@ export class UsersBusiness {
     try {
       const users: UserWithAge[] = await this.getUsersAll();
 
-      const userFilter = users.filter((u) => u.age >= min && u.age <= max);
+      const usersFilter = users.filter((u) => u.age >= min && u.age <= max);
 
-      if (userFilter.length === 0) {
+      if (usersFilter.length === 0) {
         throw new CustomError("Nenhum usuário encontrado!", 404);
       }
 
-      return userFilter;
+      return usersFilter;
     } catch (error: any) {
       if (error instanceof CustomError) {
         throw error;
@@ -251,8 +252,8 @@ export class UsersBusiness {
 
   async deleteInativesUsers(): Promise<UserWithAge[]> {
     try {
-      const users = await this.getUsersAll();
-      const posts = await this.postBusiness.getPostAll();
+      const users: UserWithAge[] = await this.getUsersAll();
+      const posts: Post[] = await this.postBusiness.getPostAll();
 
       const usersInatives = users.filter(
         (user) =>
