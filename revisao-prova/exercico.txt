@@ -1,0 +1,24 @@
+// Exercício 1: Retornar os produtos comprados
+ por um cliente em específico
+
+// Exercício 2: Retornar os clientes que compraram 
+produtos de uma categoria em específico
+
+//Exercício 3: Retornar os clientes com apenas um item no pedido
+
+//Exercício 4: Retornar um relatório por
+ cliente: total de pedidos,
+  itens distintos e categorias distintas
+
+//Exercício 5: Retornar produtos que 
+contenham um trecho de uma busca em suas categorias (com query params)
+
+//Exercicio 6: Remover todos pedidos de um determinado cliente
+ de uma determinada categoria
+//Exemplo, remover todos doces de Leonardo
+// '/pedidos/:idCliente/categoria/:idCategoria'
+
+// Exercício 6: Remover todos pedidos de um determinado cliente
+ que contenham produtos de uma determinada categorias
+// Exemplo de uso: DELETE http://localhost:3000/pedidos/1/categoria/1
+ (removeria pedidos de 'Leonardo' com 'Doces')
