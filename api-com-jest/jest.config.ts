@@ -10,7 +10,6 @@ module.exports = {
   roots: ["<rootDir>/src"],
   // Ignorar o diretório node_modules
   testPathIgnorePatterns: ["/node_modules/"],
-  // Cobertura de código (opcional, mas recomendado)
   collectCoverage: true,
   collectCoverageFrom: [
     "src/**/*.ts",
@@ -21,14 +20,9 @@ module.exports = {
     "!src/errors/**/*.ts",
   ],
 
-  // =============== AQUI ESTÁ O AJUSTE CRUCIAL ===============
-  // Isso instrui o ts-jest a usar um transpilador que não confunde o Babel/Jest
-  // com as sintaxes do TypeScript como as "Type Assertions" (`as Type`).
   globals: {
-    "ts-jest": {
-      // Use 'ts-es' para melhor compatibilidade com a sintaxe TS e ES Modules
-      tsconfig: "tsconfig.json", // Assumindo que você tem este arquivo
+    jest: {
+      tsconfig: "tsconfig.json",
     },
   },
-  // =========================================================
 };

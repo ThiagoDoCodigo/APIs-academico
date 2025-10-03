@@ -62,6 +62,123 @@ describe("UserService - getUsersAll", () => {
   });
 });
 
+describe("UserService - getUserById", () => {
+  const mockGetUserById = jest.fn<Promise<UserWithAge[]>, [number]>();
+
+  const mockRepository = {
+    getUserById: mockGetUserById,
+  };
+
+  const service = new UserService(mockRepository as any);
+
+  const receivedId: number = 1;
+
+  const expectedUser: UserWithAge = {
+    id_user: 1,
+    name_user: "Thiago",
+    email_user: "thiago@email.com",
+    role_user: "user",
+    nasc_user: "01/01/2000",
+    age_user: 25,
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Deve retornar o usuário com sucesso", async () => {
+    //Retorno do banco
+    mockGetUserById.mockResolvedValue([expectedUser]);
+
+    const result = await service.getUserById(receivedId);
+
+    expect(result).toEqual(expectedUser);
+
+    expect(mockGetUserById).toHaveBeenCalled();
+  });
+
+  it("deve lançar erro se a lista de usuários estiver vazia ou for nula", async () => {
+    mockGetUserById.mockResolvedValue([]);
+
+    await expect(service.getUserById(receivedId)).rejects.toThrow(
+      "Usuário não encontrado."
+    );
+  });
+
+  it("deve lançar erro genérico caso ocorra algo inesperado", async () => {
+    mockGetUserById.mockRejectedValue(new Error("Erro ao consultar usuários!"));
+
+    await expect(service.getUserById(receivedId)).rejects.toThrow(
+      "Erro ao consultar usuários!"
+    );
+  });
+});
+
+describe("UserService - getUsersByName", () => {
+  const mockGetUsersByName = jest.fn<Promise<UserWithAge[]>, [string]>();
+
+  const mockRepository = {
+    getUsersByName: mockGetUsersByName,
+  };
+
+  const service = new UserService(mockRepository as any);
+
+  const receivedName: string = "T";
+
+  const expectedListUsers: UserWithAge[] = [
+    {
+      id_user: 1,
+      name_user: "Thiago",
+      email_user: "thiago@email.com",
+      role_user: "admin",
+      nasc_user: "01/01/2000",
+      age_user: 25,
+    },
+    {
+      id_user: 2,
+      name_user: "Outro",
+      email_user: "Outro@email.com",
+      role_user: "user",
+      nasc_user: "01/01/2000",
+      age_user: 25,
+    },
+  ];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Deve retornar a lista de usuarios da pesquisa com sucesso", async () => {
+    mockGetUsersByName.mockResolvedValue(expectedListUsers);
+
+    const result = await service.getUsersByName(
+      receivedName.toLocaleLowerCase()
+    );
+
+    expect(result).toEqual(expectedListUsers);
+
+    expect(mockGetUsersByName).toHaveBeenCalled();
+  });
+
+  it("deve lançar erro se a lista de usuários estiver vazia ou for nula", async () => {
+    mockGetUsersByName.mockResolvedValue([]);
+
+    await expect(
+      service.getUsersByName(receivedName.toLocaleLowerCase())
+    ).rejects.toThrow("Nenhuma correspondência com a pesquisa enviada!");
+  });
+
+  it("deve lançar erro genérico caso ocorra algo inesperado", async () => {
+    mockGetUsersByName.mockRejectedValue(
+      new Error("Erro ao consultar usuários!")
+    );
+
+    await expect(
+      service.getUsersByName(receivedName.toLocaleLowerCase())
+    ).rejects.toThrow("Erro ao consultar usuários!");
+  });
+});
+
 describe("UserService - createUser", () => {
   // Mock tipado da função createUser
   const mockCreateUser = jest.fn<Promise<UserWithAge[]>, [UserPost]>();
