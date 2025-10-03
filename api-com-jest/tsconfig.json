@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2020", // ou "es2022"
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "resolveJsonModule": true
+    // ... outras opções que você já tenha
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
