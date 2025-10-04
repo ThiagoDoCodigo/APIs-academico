@@ -1,6 +1,6 @@
 import { CustomError } from "../errors/CustomError";
 import { UserService } from "../services/UserService";
-import { UserPost, UserWithAge } from "../types/UserType";
+import { UserPost, UserWithAge, UserUpdates } from "../types/UserType";
 import bcrypt from "bcrypt";
 
 describe("UserService - getUsersAll", () => {
@@ -179,6 +179,77 @@ describe("UserService - getUsersByName", () => {
   });
 });
 
+describe("UserService - getUsersByAgeBetween", () => {
+  const mockGetUsersByAgeBetween = jest.fn<
+    Promise<UserWithAge[]>,
+    [number],
+    [number]
+  >();
+
+  const mockRepository = {
+    getUsersByAgeBetween: mockGetUsersByAgeBetween,
+  };
+
+  const service = new UserService(mockRepository as any);
+
+  const receivedAgeMin: number = 20;
+  const receivedAgeMax: number = 50;
+
+  const expectedListUsers: UserWithAge[] = [
+    {
+      id_user: 1,
+      name_user: "Thiago",
+      email_user: "thiago@email.com",
+      role_user: "admin",
+      nasc_user: "01/01/2000",
+      age_user: 25,
+    },
+    {
+      id_user: 2,
+      name_user: "Outro",
+      email_user: "Outro@email.com",
+      role_user: "user",
+      nasc_user: "01/01/2000",
+      age_user: 31,
+    },
+  ];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Deve retornar os usuários com idades entre as enviadas", async () => {
+    mockGetUsersByAgeBetween.mockResolvedValue(expectedListUsers);
+
+    const result = await service.getUsersByAgeBetween(
+      receivedAgeMin,
+      receivedAgeMax
+    );
+
+    expect(result).toEqual(expectedListUsers);
+
+    expect(mockGetUsersByAgeBetween).toHaveBeenCalled();
+  });
+
+  it("Deve retornar erro se a lista de usuários estiver vazia ou nula", async () => {
+    mockGetUsersByAgeBetween.mockResolvedValue([]);
+
+    await expect(
+      service.getUsersByAgeBetween(receivedAgeMin, receivedAgeMax)
+    ).rejects.toThrow("Nenhum usuário encontrado na faixa etária informada.");
+  });
+
+  it("deve lançar erro genérico caso ocorra algo inesperado", async () => {
+    mockGetUsersByAgeBetween.mockRejectedValue(
+      new Error("Erro ao consultar usuários!")
+    );
+
+    await expect(
+      service.getUsersByAgeBetween(receivedAgeMin, receivedAgeMax)
+    ).rejects.toThrow("Erro ao consultar usuários!");
+  });
+});
+
 describe("UserService - createUser", () => {
   // Mock tipado da função createUser
   const mockCreateUser = jest.fn<Promise<UserWithAge[]>, [UserPost]>();
@@ -265,5 +336,96 @@ describe("UserService - createUser", () => {
     await expect(service.createUser({ ...fakeUser })).rejects.toThrow(
       "Erro ao criar usuário!"
     );
+  });
+});
+
+describe("UserService - putUser", () => {
+  const mockPutUser = jest.fn<
+    Promise<UserWithAge[]>,
+    [UserUpdates],
+    [number]
+  >();
+
+  const mockRepository = {
+    putUser: mockPutUser,
+  };
+
+  const service = new UserService(mockRepository as any);
+
+  const receivedId: number = 1;
+
+  const receivedInfs: UserUpdates = {
+    name_user: "Thiago",
+    email_user: "thiago@email.com",
+    role_user: "user",
+    nasc_user: "2000-01-01",
+    password_user: "123456",
+  };
+
+  const expectedUser: UserWithAge = {
+    id_user: 1,
+    name_user: "Thiago",
+    email_user: "thiago@email.com",
+    role_user: "user",
+    nasc_user: "01/01/2000",
+    age_user: 25,
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Deve retornar o usuário com a sua atualização completa", async () => {
+    jest
+      .spyOn(bcrypt, "hash")
+      .mockImplementation(async () => "senhaCriptografada");
+
+    mockPutUser.mockResolvedValue([expectedUser]);
+
+    const result = await service.putUser({ ...receivedInfs }, receivedId);
+
+    expect(result).toEqual(expectedUser);
+
+    expect(mockPutUser).toHaveBeenCalledWith(
+      { ...receivedInfs, password_user: "senhaCriptografada" },
+      receivedId
+    );
+  });
+
+  it("deve lançar erro se retorno do DB for vazio", async () => {
+    jest
+      .spyOn(bcrypt, "hash")
+      .mockImplementation(async () => "senhaCriptografada");
+
+    mockPutUser.mockResolvedValue([]);
+
+    await expect(
+      service.putUser({ ...receivedInfs }, receivedId)
+    ).rejects.toThrow("Usuário não encontrado para atualização.");
+  });
+
+  it("deve lançar erro se email já estiver em uso (code 23505)", async () => {
+    jest
+      .spyOn(bcrypt, "hash")
+      .mockImplementation(async () => "senhaCriptografada");
+
+    const error = { original: { code: "23505" } };
+    mockPutUser.mockRejectedValue(error);
+
+    await expect(
+      service.putUser({ ...receivedInfs }, receivedId)
+    ).rejects.toThrow("Este email já está sendo utilizado por outro usuário!");
+  });
+
+  it("deve lançar erro genérico caso ocorra algo inesperado", async () => {
+    jest
+      .spyOn(bcrypt, "hash")
+      .mockImplementation(async () => "senhaCriptografada");
+
+    mockPutUser.mockRejectedValue(new Error("Erro ao atualizar usuário."));
+
+    await expect(
+      service.putUser({ ...receivedInfs }, receivedId)
+    ).rejects.toThrow("Erro ao atualizar usuário.");
   });
 });
